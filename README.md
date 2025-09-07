@@ -80,7 +80,11 @@ AgroChain solves these problems through:
 
 
 
-https://github.com/user-attachments/assets/5e168007-88f8-45bc-b362-57108bc7ced5
+
+
+https://github.com/user-attachments/assets/c1cbd482-6622-4a54-95e9-ea158fbad140
+
+
 
 
 
