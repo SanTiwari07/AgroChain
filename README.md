@@ -78,13 +78,11 @@ AgroChain solves these problems through:
 
 ## Video Walkthroughs
 
-Use the following links for short demonstrations. Replace with your actual URLs when available.
 
-- System overview: `https://example.com/video/system-overview`
-- Farmer workflow (register, QR generation): `https://example.com/video/farmer-workflow`
-- Distributor workflow (handling cost, transport): `https://example.com/video/distributor-workflow`
-- Retailer workflow (retail margin, store details): `https://example.com/video/retailer-workflow`
-- Customer verification (scan QR, view history): `https://example.com/video/customer-verification`
+
+https://github.com/user-attachments/assets/5e168007-88f8-45bc-b362-57108bc7ced5
+
+
 
 ---
 
