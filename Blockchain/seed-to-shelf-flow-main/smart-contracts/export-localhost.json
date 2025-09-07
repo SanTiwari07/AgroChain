@@ -1,0 +1,108 @@
+{
+  "network": "localhost",
+  "contract": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+  "totalProducts": 3,
+  "totalTransactions": 5,
+  "totalValueEth": "29.6",
+  "activeProducts": 3,
+  "products": [
+    {
+      "id": "AGRI-DEMO-001",
+      "name": "Premium Basmati Rice",
+      "quantity": 500,
+      "basePrice": "0.025",
+      "currentPrice": "0.04",
+      "harvestDate": "2024-08-15",
+      "quality": "A",
+      "status": "Available for Consumers",
+      "farmer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "distributor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "retailer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "location": "Punjab, India",
+      "timestamp": 1756994493
+    },
+    {
+      "id": "AGRI-DEMO-002",
+      "name": "Organic Wheat",
+      "quantity": 300,
+      "basePrice": "0.02",
+      "currentPrice": "0.02",
+      "harvestDate": "2024-08-20",
+      "quality": "A",
+      "status": "Available for Distribution",
+      "farmer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "retailer": "0x0000000000000000000000000000000000000000",
+      "location": "Haryana, India",
+      "timestamp": 1756994494
+    },
+    {
+      "id": "AGRI-DEMO-003",
+      "name": "Fresh Corn",
+      "quantity": 200,
+      "basePrice": "0.018",
+      "currentPrice": "0.018",
+      "harvestDate": "2024-08-25",
+      "quality": "B",
+      "status": "Available for Distribution",
+      "farmer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "distributor": "0x0000000000000000000000000000000000000000",
+      "retailer": "0x0000000000000000000000000000000000000000",
+      "location": "Gujarat, India",
+      "timestamp": 1756994495
+    }
+  ],
+  "histories": {
+    "AGRI-DEMO-001": [
+      {
+        "productId": "AGRI-DEMO-001",
+        "actor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "action": "Product Registered",
+        "newPrice": "0.025",
+        "details": "Registered at Punjab, India",
+        "timestamp": 1756994493,
+        "blockNumber": 684
+      },
+      {
+        "productId": "AGRI-DEMO-001",
+        "actor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "action": "Transportation Started",
+        "newPrice": "0.03",
+        "details": "Truck ID: PB-01-1234, Driver: Ravi Kumar, Route: Punjab to Delhi",
+        "timestamp": 1756994496,
+        "blockNumber": 687
+      },
+      {
+        "productId": "AGRI-DEMO-001",
+        "actor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "action": "Added to Store",
+        "newPrice": "0.04",
+        "details": "FreshMart Delhi, Cold Storage, 30-day shelf life",
+        "timestamp": 1756994497,
+        "blockNumber": 688
+      }
+    ],
+    "AGRI-DEMO-002": [
+      {
+        "productId": "AGRI-DEMO-002",
+        "actor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "action": "Product Registered",
+        "newPrice": "0.02",
+        "details": "Registered at Haryana, India",
+        "timestamp": 1756994494,
+        "blockNumber": 685
+      }
+    ],
+    "AGRI-DEMO-003": [
+      {
+        "productId": "AGRI-DEMO-003",
+        "actor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "action": "Product Registered",
+        "newPrice": "0.018",
+        "details": "Registered at Gujarat, India",
+        "timestamp": 1756994495,
+        "blockNumber": 686
+      }
+    ]
+  }
+}
