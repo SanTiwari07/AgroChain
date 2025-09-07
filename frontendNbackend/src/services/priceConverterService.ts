@@ -135,3 +135,5 @@ export const getPriceInBothCurrencies = (ethAmount: string): { eth: string; inr:
 
 
 
+
+

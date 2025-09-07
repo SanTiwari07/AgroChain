@@ -23,7 +23,7 @@ const ENV_INR_DECIMALS = (import.meta as any)?.env?.VITE_INR_DECIMALS as string 
 const ENV_PRICE_UNIT = ((import.meta as any)?.env?.VITE_PRICE_UNIT as string | undefined)?.toUpperCase(); // 'INR_UNITS' | 'ETH_WEI'
 const ENV_ETH_TO_INR_RATE = (import.meta as any)?.env?.VITE_ETH_TO_INR_RATE as string | undefined; // number string
 
-export const AGRICHAIN_CONTRACT_ADDRESS = ENV_CONTRACT_ADDRESS || "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Default: Localhost (Hardhat)
+export const AGRICHAIN_CONTRACT_ADDRESS = ENV_CONTRACT_ADDRESS || "0x2546BcD3c84621e976D8185a91A922aE77ECEc30"; // Default: Localhost (Hardhat)
 const EXPECTED_CHAIN_ID: bigint | null = (() => {
   if (!ENV_CHAIN_ID) return 31337n; // default to Hardhat local
   try {
