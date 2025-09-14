@@ -8,7 +8,7 @@ import { useLanguage } from './LanguageProvider';
 export function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { text: 'Hello! I\'m here to help you with KrishiChain. How can I assist you today?', isBot: true }
+    { text: 'Hello! I\'m here to help you with KrishiSetu. How can I assist you today?', isBot: true }
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const { t } = useLanguage();
@@ -53,7 +53,7 @@ export function ChatBot() {
         <Card className="fixed bottom-24 left-6 w-80 h-96 shadow-xl z-50 flex flex-col">
           <CardHeader className="pb-2">
             <div className="flex justify-between items-center">
-              <CardTitle className="text-sm">KrishiChain Assistant</CardTitle>
+              <CardTitle className="text-sm">KrishiSetu Assistant</CardTitle>
               <Button
                 variant="ghost"
                 size="icon"

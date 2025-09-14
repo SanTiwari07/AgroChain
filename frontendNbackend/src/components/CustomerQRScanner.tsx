@@ -10,7 +10,6 @@ import { useLanguage } from './LanguageProvider';
 import { blockchainService, Product, Transaction, formatEther, formatInr } from '../services/blockchainService';
 import { qrCodeService, QRCodeData } from '../services/qrCodeService';
 import { convertEthToInr } from '../services/priceConverterService';
-import { PricingBreakdown } from './PricingBreakdown';
 import { toast } from 'sonner';
 
 interface CustomerQRScannerProps {
@@ -191,17 +190,17 @@ export function CustomerQRScanner({ onBack }: CustomerQRScannerProps) {
     setIsLoading(true);
     try {
       // Get product details
-      const product = await blockchainService.getProduct(productId);
+      const product = await blockchainService.getProduct(productId.trim().toUpperCase());
       if (!product || !product.exists) {
         toast.error('Product not found on blockchain. Please check the product ID.');
         return;
       }
 
       // Get transaction history
-      const transactions = await blockchainService.getProductHistory(productId);
+      const transactions = await blockchainService.getProductHistory(productId.trim().toUpperCase());
       
       // Get verification data
-      const verification = await blockchainService.verifyProduct(productId);
+      const verification = await blockchainService.verifyProduct(productId.trim().toUpperCase());
       
       const blockchainData: BlockchainProductData = {
         product,
@@ -345,12 +344,7 @@ export function CustomerQRScanner({ onBack }: CustomerQRScannerProps) {
               </CardHeader>
             </Card>
 
-            {/* Pricing Breakdown */}
-            <PricingBreakdown 
-              transactions={scannedData.transactions}
-              currentPrice={scannedData.product.currentPrice}
-              productName={scannedData.product.name}
-            />
+            {/* Pricing Breakdown removed (component not present) */}
 
             {/* Blockchain Verification */}
             <Card className="bg-card/90 backdrop-blur-sm border-border/50 mb-8">

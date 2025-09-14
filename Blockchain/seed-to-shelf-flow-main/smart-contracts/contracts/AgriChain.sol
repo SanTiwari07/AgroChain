@@ -2,11 +2,11 @@
 pragma solidity ^0.8.19;
 
 /**
- * @title AgriChain
+ * @title KrishiSetu
  * @dev Smart contract for agricultural supply chain transparency
  * @author SIH Team - Agricultural Blockchain Solution
  */
-contract AgriChain {
+contract KrishiSetu {
     
     // Product structure to store all product information
     struct Product {

@@ -81,7 +81,8 @@ export function RetailerDashboard({ onLogout }: RetailerDashboardProps) {
     }
 
     try {
-      const product = await blockchainService.getProduct(productId);
+      const normalizedId = productId.trim().toUpperCase();
+      const product = await blockchainService.getProduct(normalizedId);
       if (!product || !product.exists) {
         toast.error('Product not found on blockchain');
         return;
@@ -93,7 +94,7 @@ export function RetailerDashboard({ onLogout }: RetailerDashboardProps) {
       }
 
       setScannedProduct(product);
-      setNewSale(prev => ({ ...prev, productId }));
+      setNewSale(prev => ({ ...prev, productId: normalizedId }));
       setShowQRScanner(false);
       toast.success(`Product scanned: ${product.name}`);
     } catch (error) {
@@ -106,8 +107,9 @@ export function RetailerDashboard({ onLogout }: RetailerDashboardProps) {
     e.preventDefault();
     try {
       let product = scannedProduct;
+      const normalizedId = newSale.productId.trim().toUpperCase();
       if (!product) {
-        product = await blockchainService.getProduct(newSale.productId);
+        product = await blockchainService.getProduct(normalizedId);
         if (!product || !product.exists) {
           toast.error('Product not found on blockchain. Please scan or enter a valid Product ID.');
           return;
@@ -116,7 +118,7 @@ export function RetailerDashboard({ onLogout }: RetailerDashboardProps) {
 
       const sale: BlockchainSale = {
         id: sales.length + 1,
-        productId: newSale.productId,
+        productId: normalizedId,
         product: product,
         cropName: product.name,
         weight: Number(product.quantity),
@@ -147,7 +149,7 @@ export function RetailerDashboard({ onLogout }: RetailerDashboardProps) {
     setIsLoading(true);
     try {
       const txHash = await blockchainService.updateAsRetailer(
-        sale.productId,
+        sale.productId.trim().toUpperCase(),
         sale.retailMargin,
         sale.storeDetails
       );

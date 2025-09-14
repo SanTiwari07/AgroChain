@@ -3,28 +3,28 @@ const fs = require("fs");
 const path = require("path");
 
 async function main() {
-  console.log("🚀 Deploying AgriChain Smart Contract...");
+  console.log("🚀 Deploying KrishiSetu Smart Contract...");
   console.log("=====================================");
   
   // Get the contract factory
-  const AgriChain = await hre.ethers.getContractFactory("AgriChain");
+  const KrishiSetu = await hre.ethers.getContractFactory("KrishiSetu");
   
   // Deploy the contract
   console.log("📦 Deploying contract...");
-  const agriChain = await AgriChain.deploy();
+  const krishiSetu = await KrishiSetu.deploy();
   
   // Wait for deployment to be mined
-  await agriChain.waitForDeployment();
+  await krishiSetu.waitForDeployment();
   
-  const contractAddress = await agriChain.getAddress();
-  console.log(`✅ AgriChain deployed successfully!`);
+  const contractAddress = await krishiSetu.getAddress();
+  console.log(`✅ KrishiSetu deployed successfully!`);
   console.log(`📍 Contract Address: ${contractAddress}`);
   console.log(`🔗 Network: ${hre.network.name}`);
   try {
     const outPath = path.join(__dirname, "../deployed-" + hre.network.name + ".json");
     fs.writeFileSync(
       outPath,
-      JSON.stringify({ address: contractAddress, network: hre.network.name, artifact: "artifacts/contracts/AgriChain.sol/AgriChain.json" }, null, 2)
+      JSON.stringify({ address: contractAddress, network: hre.network.name, artifact: "artifacts/contracts/KrishiSetu.sol/KrishiSetu.json" }, null, 2)
     );
     console.log(`📝 Saved deployment info to: ${outPath}`);
   } catch (e) {
@@ -32,7 +32,7 @@ async function main() {
   }
   
   // Get deployment transaction details
-  const deploymentTx = agriChain.deploymentTransaction();
+  const deploymentTx = krishiSetu.deploymentTransaction();
   if (deploymentTx) {
     console.log(`💸 Deployment Transaction Hash: ${deploymentTx.hash}`);
     console.log(`⛽ Gas Used: ${deploymentTx.gasLimit?.toString()}`);
@@ -44,7 +44,7 @@ async function main() {
   // Register sample products to demonstrate functionality
   const sampleProducts = [
     {
-      id: "AGRI-DEMO-001",
+      id: "KRISHI-DEMO-001",
       name: "Premium Basmati Rice",
       quantity: 500,
       basePrice: hre.ethers.parseEther("0.025"), // 0.025 ETH per kg
@@ -53,7 +53,7 @@ async function main() {
       location: "Punjab, India"
     },
     {
-      id: "AGRI-DEMO-002", 
+      id: "KRISHI-DEMO-002", 
       name: "Organic Wheat",
       quantity: 300,
       basePrice: hre.ethers.parseEther("0.020"), // 0.020 ETH per kg
@@ -62,7 +62,7 @@ async function main() {
       location: "Haryana, India"
     },
     {
-      id: "AGRI-DEMO-003",
+      id: "KRISHI-DEMO-003",
       name: "Fresh Corn",
       quantity: 200,
       basePrice: hre.ethers.parseEther("0.018"), // 0.018 ETH per kg
@@ -78,7 +78,7 @@ async function main() {
     
     try {
       console.log(`\n📝 Registering: ${product.name}`);
-      const tx = await agriChain.registerProduct(
+      const tx = await krishiSetu.registerProduct(
         product.id,
         product.name,
         product.quantity,
@@ -106,8 +106,8 @@ async function main() {
   try {
     // Simulate distributor updating first product
     console.log("\n📦 Distributor taking first product...");
-    const distributorTx = await agriChain.updateAsDistributor(
-      "AGRI-DEMO-001",
+    const distributorTx = await krishiSetu.updateAsDistributor(
+      "KRISHI-DEMO-001",
       hre.ethers.parseEther("0.005"), // 0.005 ETH handling cost
       "Truck ID: PB-01-1234, Driver: Ravi Kumar, Route: Punjab to Delhi"
     );
@@ -118,8 +118,8 @@ async function main() {
     
     // Simulate retailer updating the product
     console.log("\n🏪 Retailer adding product to store...");
-    const retailerTx = await agriChain.updateAsRetailer(
-      "AGRI-DEMO-001",
+    const retailerTx = await krishiSetu.updateAsRetailer(
+      "KRISHI-DEMO-001",
       hre.ethers.parseEther("0.010"), // 0.010 ETH retail margin
       "FreshMart Delhi, Cold Storage, 30-day shelf life"
     );
@@ -137,7 +137,7 @@ async function main() {
   console.log("============================");
   
   try {
-    const stats = await agriChain.getContractStats();
+    const stats = await krishiSetu.getContractStats();
     console.log(`📦 Total Products: ${stats[0]}`);
     console.log(`💳 Total Transactions: ${stats[1]}`);
     console.log(`💰 Total Value: ${hre.ethers.formatEther(stats[2])} ETH`);
@@ -158,7 +158,7 @@ async function main() {
   console.log("   4. Start demonstrating the supply chain transparency!");
   
   // Output contract ABI location
-  console.log(`\n📁 Contract ABI available at: artifacts/contracts/AgriChain.sol/AgriChain.json`);
+  console.log(`\n📁 Contract ABI available at: artifacts/contracts/KrishiSetu.sol/KrishiSetu.json`);
   
   return contractAddress;
 }

@@ -7,7 +7,8 @@ import { BackgroundWrapper } from './BackgroundWrapper';
 import { Header } from './Header';
 import { ArrowLeft } from 'lucide-react';
 import { useLanguage } from './LanguageProvider';
-import { signIn } from '../services/firebaseService';
+import { signIn, validateUserRole } from '../services/firebaseService';
+import { toast } from 'sonner';
 
 interface LoginPageProps {
   role: 'farmer' | 'distributor' | 'retailer';
@@ -20,21 +21,48 @@ export function LoginPage({ role, onBack, onLogin, onSignupRedirect }: LoginPage
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [forgotPassword, setForgotPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (forgotPassword) {
       // Handle forgot password
-      alert('Password reset link sent to your email!');
+      toast.success('Password reset link sent to your email!');
       setForgotPassword(false);
     } else {
+      setIsLoading(true);
       try {
+        // First validate the user's role before attempting login
+        const roleValidation = await validateUserRole(email, role);
+        
+        if (!roleValidation.isValid) {
+          toast.error(roleValidation.error, {
+            duration: 5000,
+            style: {
+              background: '#dc2626',
+              color: 'white',
+              border: '1px solid #b91c1c'
+            }
+          });
+          return;
+        }
+        
+        // If role is valid, proceed with login
         await signIn(email, password);
         // Call onLogin for proper handling
         onLogin(email, password);
       } catch (error: any) {
-        alert(`Login failed: ${error.message}`);
+        toast.error(`Login failed: ${error.message}`, {
+          duration: 5000,
+          style: {
+            background: '#dc2626',
+            color: 'white',
+            border: '1px solid #b91c1c'
+          }
+        });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -94,8 +122,12 @@ export function LoginPage({ role, onBack, onLogin, onSignupRedirect }: LoginPage
                   </div>
                 )}
 
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-                  {forgotPassword ? 'Send Reset Link' : t('login')}
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Validating...' : (forgotPassword ? 'Send Reset Link' : t('login'))}
                 </Button>
 
                 {!forgotPassword && (

@@ -81,7 +81,8 @@ export function DistributorDashboard({ onLogout }: DistributorDashboardProps) {
     }
 
     try {
-      const product = await blockchainService.getProduct(productId);
+      const normalizedId = productId.trim().toUpperCase();
+      const product = await blockchainService.getProduct(normalizedId);
       if (!product || !product.exists) {
         toast.error('Product not found on blockchain');
         return;
@@ -93,7 +94,7 @@ export function DistributorDashboard({ onLogout }: DistributorDashboardProps) {
       }
 
       setScannedProduct(product);
-      setNewPurchase(prev => ({ ...prev, productId }));
+      setNewPurchase(prev => ({ ...prev, productId: normalizedId }));
       setShowQRScanner(false);
       toast.success(`Product scanned: ${product.name}`);
     } catch (error) {
@@ -106,8 +107,9 @@ export function DistributorDashboard({ onLogout }: DistributorDashboardProps) {
     e.preventDefault();
     try {
       let product = scannedProduct;
+      const normalizedId = newPurchase.productId.trim().toUpperCase();
       if (!product) {
-        product = await blockchainService.getProduct(newPurchase.productId);
+        product = await blockchainService.getProduct(normalizedId);
         if (!product || !product.exists) {
           toast.error('Product not found on blockchain. Please scan or enter a valid Product ID.');
           return;
@@ -116,7 +118,7 @@ export function DistributorDashboard({ onLogout }: DistributorDashboardProps) {
 
       const purchase: BlockchainPurchase = {
         id: purchases.length + 1,
-        productId: newPurchase.productId,
+        productId: normalizedId,
         product: product,
         cropName: product.name,
         weight: Number(product.quantity),
@@ -147,7 +149,7 @@ export function DistributorDashboard({ onLogout }: DistributorDashboardProps) {
     setIsLoading(true);
     try {
       const txHash = await blockchainService.updateAsDistributor(
-        purchase.productId,
+        purchase.productId.trim().toUpperCase(),
         purchase.handlingCost,
         purchase.transportDetails
       );

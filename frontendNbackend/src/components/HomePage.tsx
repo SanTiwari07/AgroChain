@@ -44,16 +44,34 @@ export function HomePage({ onRoleSelect }: HomePageProps) {
     }
   ];
 
-  return (
-    <BackgroundWrapper type="default">
+  const content = (
+    <>
       <Header />
       
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="flex items-center justify-center min-h-screen px-4 pt-44 md:pt-48">
         <div className="w-full max-w-4xl">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-              {t('KrishiChain')}
-            </h1>
+          <div className="text-center mt-4 md:mt-6 mb-12">
+            <div className="flex items-center justify-center gap-1 mb-4">
+              <div className="w-[100px] h-[100px]">
+                <img 
+                  src="/KrishiSetu_logo.svg" 
+                  alt="KrishiSetu Logo" 
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    // Fallback to a simple placeholder if logo is not found
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center"><span class="text-white font-bold text-lg">K</span></div>';
+                    }
+                  }}
+                />
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold text-foreground">
+                {t('KrishiSetu')}
+              </h1>
+            </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Blockchain-powered transparency for agricultural supply chains. 
               Choose your role to get started.
@@ -101,6 +119,10 @@ export function HomePage({ onRoleSelect }: HomePageProps) {
           </div>
         </div>
       </div>
-    </BackgroundWrapper>
+    </>
+  );
+
+  return (
+    <BackgroundWrapper type="default" children={content} />
   );
 }

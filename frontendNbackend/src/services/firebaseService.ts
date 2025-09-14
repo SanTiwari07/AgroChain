@@ -16,7 +16,8 @@ import {
   where, 
   getDocs 
 } from 'firebase/firestore';
-import { auth, db } from '../../firebase.js';
+// Prefer local module path that exists in this project
+import { auth, db } from '../firebase';
 
 export interface UserData {
   uid: string;
@@ -211,5 +212,41 @@ export const getAllUsers = async (): Promise<UserData[]> => {
     })) as UserData[];
   } catch (error: any) {
     throw new Error(error.message);
+  }
+};
+
+// Role validation function
+export const validateUserRole = async (email: string, expectedRole: 'farmer' | 'distributor' | 'retailer' | 'customer'): Promise<{ isValid: boolean; userData?: UserData; error?: string }> => {
+  try {
+    // Query users by email
+    const q = query(collection(db, 'users'), where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      return {
+        isValid: false,
+        error: `This email is not registered in our system. Please sign up first.`
+      };
+    }
+    
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data() as UserData;
+    
+    if (userData.role !== expectedRole) {
+      return {
+        isValid: false,
+        error: `This email is not registered as ${expectedRole}. This email is registered as ${userData.role}.`
+      };
+    }
+    
+    return {
+      isValid: true,
+      userData
+    };
+  } catch (error: any) {
+    return {
+      isValid: false,
+      error: `Error validating user role: ${error.message}`
+    };
   }
 };

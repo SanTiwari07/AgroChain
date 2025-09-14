@@ -9,10 +9,10 @@ type Translations = {
 };
 
 const translations: Translations = {
-  'KrishiChain': {
-    en: 'KrishiChain',
-    hi: 'कृषिचेन',
-    or: 'କୃଷିଚେନ୍'
+  'KrishiSetu': {
+    en: 'KrishiSetu',
+    hi: 'कृषि सेतु',
+    or: 'କୃଷି ସେତୁ'
   },
   'farmer': {
     en: 'Farmer',

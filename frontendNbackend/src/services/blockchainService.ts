@@ -1,7 +1,14 @@
 import { ethers } from 'ethers';
 
-// AgriChain Contract ABI - extracted from the smart contract
-export const AGRICHAIN_ABI = [
+// TypeScript: declare the injected EIP-1193 provider on window
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
+// KrishiSetu Contract ABI - extracted from the smart contract
+export const KRISHISETU_ABI = [
   "function registerProduct(string memory _id, string memory _name, uint256 _quantity, uint256 _basePrice, string memory _harvestDate, string memory _quality, string memory _location) public",
   "function updateAsDistributor(string memory _productId, uint256 _handlingCost, string memory _transportDetails) public",
   "function updateAsRetailer(string memory _productId, uint256 _retailMargin, string memory _storeDetails) public",
@@ -16,14 +23,14 @@ export const AGRICHAIN_ABI = [
 ];
 
 // Contract address and network config (overridable via Vite env)
-const ENV_CONTRACT_ADDRESS = (import.meta as any)?.env?.VITE_AGRICHAIN_CONTRACT_ADDRESS as string | undefined;
+const ENV_CONTRACT_ADDRESS = (import.meta as any)?.env?.VITE_KRISHISETU_CONTRACT_ADDRESS as string | undefined;
 const ENV_CHAIN_ID = (import.meta as any)?.env?.VITE_CHAIN_ID as string | undefined; // decimal string, e.g., "31337" or "11155111"
 const ENV_NETWORK_NAME = (import.meta as any)?.env?.VITE_NETWORK_NAME as string | undefined;
 const ENV_INR_DECIMALS = (import.meta as any)?.env?.VITE_INR_DECIMALS as string | undefined;
 const ENV_PRICE_UNIT = ((import.meta as any)?.env?.VITE_PRICE_UNIT as string | undefined)?.toUpperCase(); // 'INR_UNITS' | 'ETH_WEI'
 const ENV_ETH_TO_INR_RATE = (import.meta as any)?.env?.VITE_ETH_TO_INR_RATE as string | undefined; // number string
 
-export const AGRICHAIN_CONTRACT_ADDRESS = ENV_CONTRACT_ADDRESS || "0x2546BcD3c84621e976D8185a91A922aE77ECEc30"; // Default: Localhost (Hardhat)
+export const KRISHISETU_CONTRACT_ADDRESS = ENV_CONTRACT_ADDRESS || "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Default: Hardhat network
 const EXPECTED_CHAIN_ID: bigint | null = (() => {
   if (!ENV_CHAIN_ID) return 31337n; // default to Hardhat local
   try {
@@ -86,7 +93,7 @@ export interface Transaction {
 }
 
 // Suppress common MetaMask warnings in development
-if (process.env.NODE_ENV === 'development') {
+if ((import.meta as any)?.env?.DEV) {
   const originalWarn = console.warn;
   console.warn = (...args) => {
     const message = args.join(' ');
@@ -108,6 +115,50 @@ export class BlockchainService {
   private contract: ethers.Contract | null = null;
   private signer: ethers.Signer | null = null;
   private isConnecting: boolean = false;
+  private resolvedAddress: string | null = null;
+
+  private async verifyContractDeployed(provider: ethers.Provider, address: string): Promise<void> {
+    try {
+      const code = await provider.getCode(address);
+      if (!code || code === '0x') {
+        throw new Error(`No contract code at ${address}. Is KrishiSetu deployed on this network?`);
+      }
+    } catch (err) {
+      throw err as Error;
+    }
+  }
+
+  private async requestNetworkSwitch(currentChainId: bigint): Promise<void> {
+    try {
+      const targetChainIdHex = `0x${EXPECTED_CHAIN_ID!.toString(16)}`;
+      // Try switch first
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: targetChainIdHex }]
+      });
+    } catch (switchError: any) {
+      // 4902 = Unrecognized chain, try to add
+      if (switchError?.code === 4902) {
+        try {
+          const chainName = ENV_NETWORK_NAME || 'KrishiSetu Local';
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: `0x${EXPECTED_CHAIN_ID!.toString(16)}`,
+              chainName,
+              nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+              rpcUrls: ['http://localhost:8545', 'http://127.0.0.1:8545'],
+              blockExplorerUrls: []
+            }]
+          });
+        } catch (addError) {
+          throw addError as Error;
+        }
+      } else {
+        throw switchError as Error;
+      }
+    }
+  }
 
   // Initialize connection to MetaMask/Web3 wallet
   async connect(): Promise<boolean> {
@@ -146,15 +197,48 @@ export class BlockchainService {
         
         // Verify network
         const network = await this.provider.getNetwork();
-        if (EXPECTED_CHAIN_ID !== null && network.chainId !== EXPECTED_CHAIN_ID) {
-          const expectedName = ENV_NETWORK_NAME || 'AgroChain Network';
-          throw new Error(`Please connect to ${expectedName} (Chain ID: ${EXPECTED_CHAIN_ID.toString()})`);
+        // Accept both common local IDs: 31337 (new Hardhat) and 1337 (old/ganache)
+        const acceptableChainIds = new Set<bigint>([
+          EXPECTED_CHAIN_ID ?? 31337n,
+          31337n,
+          1337n,
+        ]);
+        if (!acceptableChainIds.has(network.chainId)) {
+          try {
+            await this.requestNetworkSwitch(network.chainId);
+          } catch (err) {
+            const expectedName = ENV_NETWORK_NAME || 'KrishiSetu Local';
+            const expectedId = EXPECTED_CHAIN_ID ?? 31337n;
+            throw new Error(`Please connect to ${expectedName} (Chain ID: ${expectedId.toString()})`);
+          }
         }
         
+        // Resolve a working contract address (ENV → common local addresses)
+        const candidateAddresses: string[] = [
+          KRISHISETU_CONTRACT_ADDRESS,
+          '0x5FbDB2315678afecb367f032d93F642f64180aa3', // common first Hardhat deploy
+          '0x0165878A594ca255338adfa4d48449f69242Eb8F', // common second Hardhat deploy
+        ];
+
+        let selected: string | null = null;
+        for (const addr of candidateAddresses) {
+          try {
+            await this.verifyContractDeployed(this.provider, addr);
+            selected = addr;
+            break;
+          } catch (_) { /* try next */ }
+        }
+
+        if (!selected) {
+          throw new Error(`KrishiSetu contract not found at known addresses. Please deploy and set VITE_KRISHISETU_CONTRACT_ADDRESS`);
+        }
+
+        this.resolvedAddress = selected;
+
         // Create contract instance
         this.contract = new ethers.Contract(
-          AGRICHAIN_CONTRACT_ADDRESS,
-          AGRICHAIN_ABI,
+          selected,
+          KRISHISETU_ABI,
           this.signer
         );
 
@@ -168,13 +252,15 @@ export class BlockchainService {
         return false;
       }
     } catch (error: any) {
-      console.error('Failed to connect to blockchain:', error.message);
+      console.error('Failed to connect to blockchain:', error?.message || error);
       this.isConnecting = false;
       
       if (error.message.includes('User rejected')) {
         alert('Connection cancelled by user');
       } else if (error.message.includes('network')) {
-        alert('Please switch to AgroChain Local network in MetaMask');
+        alert('Please switch to KrishiSetu Local network in MetaMask');
+      } else if (error.message.includes('No contract code')) {
+        alert(`KrishiSetu contract not found at ${KRISHISETU_CONTRACT_ADDRESS}. Please (re)deploy and update VITE_KRISHISETU_CONTRACT_ADDRESS.`);
       } else if (error.message.includes('timeout')) {
         alert('Connection timed out. Please try again.');
       } else {
@@ -187,6 +273,11 @@ export class BlockchainService {
   // Check if wallet is connected
   isConnected(): boolean {
     return this.provider !== null && this.contract !== null;
+  }
+
+  // Expose the resolved address for debugging
+  getContractAddress(): string | null {
+    return this.resolvedAddress;
   }
 
   // Get current wallet address
@@ -215,8 +306,9 @@ export class BlockchainService {
       // Convert INR price to smallest units based on configured decimals
       const priceInWei = ethers.parseUnits(basePrice.toString(), INR_DECIMALS);
       
+      const normalizedId = id.trim().toUpperCase();
       const tx = await this.contract.registerProduct(
-        id,
+        normalizedId,
         name,
         quantity,
         priceInWei,
@@ -248,8 +340,9 @@ export class BlockchainService {
       // Convert INR cost to smallest units based on configured decimals
       const costInWei = ethers.parseUnits(handlingCost.toString(), INR_DECIMALS);
       
+      const normalizedId = productId.trim().toUpperCase();
       const tx = await this.contract.updateAsDistributor(
-        productId,
+        normalizedId,
         costInWei,
         transportDetails
       );
@@ -277,8 +370,9 @@ export class BlockchainService {
       // Convert INR margin to smallest units based on configured decimals
       const marginInWei = ethers.parseUnits(retailMargin.toString(), INR_DECIMALS);
       
+      const normalizedId = productId.trim().toUpperCase();
       const tx = await this.contract.updateAsRetailer(
-        productId,
+        normalizedId,
         marginInWei,
         storeDetails
       );
@@ -299,7 +393,8 @@ export class BlockchainService {
     }
 
     try {
-      const result = await this.contract.getProduct(productId);
+      const normalizedId = productId.trim().toUpperCase();
+      const result = await this.contract.getProduct(normalizedId);
       return {
         id: result[0],
         name: result[1],
@@ -329,7 +424,8 @@ export class BlockchainService {
     }
 
     try {
-      const history = await this.contract.getProductHistory(productId);
+      const normalizedId = productId.trim().toUpperCase();
+      const history = await this.contract.getProductHistory(normalizedId);
       return history.map((tx: any) => ({
         productId: tx[0],
         actor: tx[1],
@@ -358,7 +454,8 @@ export class BlockchainService {
     }
 
     try {
-      const result = await this.contract.verifyProduct(productId);
+      const normalizedId = productId.trim().toUpperCase();
+      const result = await this.contract.verifyProduct(normalizedId);
       return {
         verified: result[0],
         totalSteps: Number(result[1]),
@@ -475,5 +572,5 @@ export const parseInr = (inrValue: number): bigint => {
 
 // Generate unique product ID
 export const generateProductId = (): string => {
-  return `AGRI-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+  return `KRISHI-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 };

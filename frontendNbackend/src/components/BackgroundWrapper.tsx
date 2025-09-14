@@ -10,11 +10,10 @@ const backgroundImages = {
   default: 'https://images.unsplash.com/photo-1648995505971-da6e8a6aa6c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBjcm9wJTIwZmllbGQlMjBhZ3JpY3VsdHVyZSUyMGZhcm18ZW58MXx8fHwxNzU2ODg3MTcxfDA&ixlib=rb-4.1.0&q=80&w=1080'
 };
 
-interface BackgroundWrapperProps {
+type BackgroundWrapperProps = React.PropsWithChildren<{
   type: BackgroundType;
-  children: React.ReactNode;
   className?: string;
-}
+}>;
 
 export function BackgroundWrapper({ type, children, className = '' }: BackgroundWrapperProps) {
   const backgroundImage = backgroundImages[type];
@@ -34,7 +33,7 @@ export function BackgroundWrapper({ type, children, className = '' }: Background
       
       {/* Content */}
       <div className="relative z-10">
-        {children}
+        {children ?? null}
       </div>
     </div>
   );

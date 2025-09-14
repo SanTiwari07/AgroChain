@@ -120,7 +120,7 @@ export function FarmerDashboard({ onLogout }: FarmerDashboardProps) {
 
   const handleAddCrop = (e: React.FormEvent) => {
     e.preventDefault();
-    const productId = generateProductId();
+    const productId = generateProductId().trim().toUpperCase();
     const crop: BlockchainCrop = {
       id: crops.length + 1,
       name: newCrop.name,
@@ -164,7 +164,7 @@ export function FarmerDashboard({ onLogout }: FarmerDashboardProps) {
     try {
       // Register product on blockchain
       const txHash = await blockchainService.registerProduct(
-        crop.blockchainId,
+        crop.blockchainId.trim().toUpperCase(),
         crop.name,
         crop.weight,
         crop.expectedPrice,

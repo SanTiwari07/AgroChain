@@ -135,7 +135,7 @@ export default function App() {
       
       toast.dismiss('signup-loading');
       toast.success(
-        `🎉 Account created successfully! Welcome to KrishiChain, ${formData.name}!`, 
+        `🎉 Account created successfully! Welcome to KrishiSetu, ${formData.name}!`, 
         {
           duration: 5000,
           style: {

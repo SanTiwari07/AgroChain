@@ -2,26 +2,26 @@
 
 :root {
   --font-size: 16px;
-  --background: #f8fdf8;
-  --foreground: #1e2d1e;
+  --background: #ffffff;
+  --foreground: #111827;
   --card: #ffffff;
-  --card-foreground: #1e2d1e;
+  --card-foreground: #111827;
   --popover: #ffffff;
-  --popover-foreground: #1e2d1e;
+  --popover-foreground: #111827;
   --primary: #22c55e;
   --primary-foreground: #ffffff;
   --secondary: #16a34a;
   --secondary-foreground: #ffffff;
-  --muted: #f0f9f0;
-  --muted-foreground: #6b7b6b;
-  --accent: #ecfdf5;
-  --accent-foreground: #1e2d1e;
+  --muted: #f6f7f9;
+  --muted-foreground: #6b7280;
+  --accent: #f8fafc;
+  --accent-foreground: #111827;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: rgba(34, 197, 94, 0.2);
-  --input: transparent;
-  --input-background: #f7fef7;
-  --switch-background: #bbf7d0;
+  --border: rgba(0, 0, 0, 0.08);
+  --input: #e5e7eb;
+  --input-background: #ffffff;
+  --switch-background: #e5e7eb;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
   --ring: #22c55e;
@@ -31,13 +31,13 @@
   --chart-4: #84cc16;
   --chart-5: #65a30d;
   --radius: 0.75rem;
-  --sidebar: #f8fdf8;
-  --sidebar-foreground: #1e2d1e;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #111827;
   --sidebar-primary: #22c55e;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0f9f0;
-  --sidebar-accent-foreground: #1e2d1e;
-  --sidebar-border: rgba(34, 197, 94, 0.2);
+  --sidebar-accent: #f6f7f9;
+  --sidebar-accent-foreground: #111827;
+  --sidebar-border: rgba(0, 0, 0, 0.08);
   --sidebar-ring: #22c55e;
   
   /* Nature theme specific colors */

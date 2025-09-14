@@ -18,9 +18,7 @@ import {
   RefreshCw,
   AlertCircle
 } from 'lucide-react';
-import { blockchainService, Product, Transaction, formatEther, formatInr } from '../services/blockchainService';
-import { convertEthToInr } from '../services/priceConverterService';
-import { PricingBreakdown } from './PricingBreakdown';
+import { blockchainService, Product, Transaction, formatEther } from '../services/blockchainService';
 import { toast } from 'sonner';
 
 interface ProductTrackerProps {
@@ -75,7 +73,7 @@ export function ProductTracker({ productId: initialProductId, onBack }: ProductT
     setIsLoading(true);
     try {
       // Get product details
-      const productData = await blockchainService.getProduct(productId.trim());
+      const productData = await blockchainService.getProduct(productId.trim().toUpperCase());
       if (!productData || !productData.exists) {
         toast.error('Product not found on blockchain');
         setProduct(null);
@@ -85,10 +83,10 @@ export function ProductTracker({ productId: initialProductId, onBack }: ProductT
       }
 
       // Get transaction history
-      const txHistory = await blockchainService.getProductHistory(productId.trim());
+      const txHistory = await blockchainService.getProductHistory(productId.trim().toUpperCase());
       
       // Get verification data
-      const verificationData = await blockchainService.verifyProduct(productId.trim());
+      const verificationData = await blockchainService.verifyProduct(productId.trim().toUpperCase());
 
       setProduct(productData);
       setTransactions(txHistory);
@@ -232,7 +230,7 @@ export function ProductTracker({ productId: initialProductId, onBack }: ProductT
                     <IndianRupee className="w-4 h-4" />
                     Current Price
                   </div>
-                  <p className="font-semibold">₹{formatInr(product.currentPrice)}</p>
+                  <p className="font-semibold">₹{formatEther(product.currentPrice)} ETH</p>
                 </div>
                 
                 <div className="space-y-2">
@@ -295,15 +293,6 @@ export function ProductTracker({ productId: initialProductId, onBack }: ProductT
             </Card>
           )}
 
-          {/* Pricing Breakdown */}
-          {product && (
-            <PricingBreakdown 
-              transactions={transactions}
-              currentPrice={product.currentPrice}
-              productName={product.name}
-            />
-          )}
-
           {/* Supply Chain Timeline */}
           <Card>
             <CardHeader>
@@ -347,7 +336,7 @@ export function ProductTracker({ productId: initialProductId, onBack }: ProductT
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                                 <div className="bg-muted/50 rounded-lg p-3">
                                   <p className="text-xs text-muted-foreground mb-1">Price at this step</p>
-                                  <p className="font-semibold">₹{formatInr(tx.newPrice)}</p>
+                                  <p className="font-semibold">₹{formatEther(tx.newPrice)} ETH</p>
                                 </div>
                                 <div className="bg-muted/50 rounded-lg p-3">
                                   <p className="text-xs text-muted-foreground mb-1">Transaction Details</p>
