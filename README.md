@@ -1,4 +1,4 @@
-# 🌾 AgroChain: The Complete A-Z Documentation
+# 🌾 KrishiSetu: The Complete A-Z Documentation
 
 ## 📋 Table of Contents
 
@@ -23,8 +23,8 @@
 
 ## 🎯 Project Overview
 
-### What is AgroChain?
-**AgroChain** is a comprehensive **full-stack agricultural supply chain management system** that leverages **blockchain technology**, **Firebase cloud services**, and **modern web technologies** to create a transparent, traceable, and secure platform for tracking agricultural products from farm to consumer.
+### What is KrishiSetu?
+**KrishiSetu** is a comprehensive **full-stack agricultural supply chain management system** that leverages **blockchain technology**, **Firebase cloud services**, and **modern web technologies** to create a transparent, traceable, and secure platform for tracking agricultural products from farm to consumer.
 
 ### Problem Statement
 - **Lack of transparency** in food supply chains
@@ -35,7 +35,7 @@
 - **Consumer trust issues** regarding product authenticity
 
 ### Solution Approach
-AgroChain solves these problems through:
+KrishiSetu solves these problems through:
 - **Immutable blockchain records** for complete transparency
 - **QR code-based product tracking** for instant verification
 - **Multi-stakeholder platform** connecting all supply chain actors
@@ -46,7 +46,7 @@ AgroChain solves these problems through:
 
 ## Simple Guide
 
-### What is AgroChain?
+### What is KrishiSetu?
 - Imagine a special notebook where once you write, no one can erase. That’s the blockchain. We write the crop’s story there.
 
 ### Who uses it?
@@ -758,7 +758,7 @@ export class BlockchainService {
         const expectedChainId = expected?.startsWith('0x') ? BigInt(expected) : BigInt(parseInt(expected ?? '31337', 10));
         const network = await this.provider.getNetwork();
         if (network.chainId !== expectedChainId) {
-          const name = (import.meta as any).env?.VITE_NETWORK_NAME ?? 'AgroChain Network';
+          const name = (import.meta as any).env?.VITE_NETWORK_NAME ?? 'KrishiSetu Network';
           throw new Error(`Please connect to ${name} (Chain ID: ${expectedChainId.toString()})`);
         }
         
@@ -1236,7 +1236,7 @@ const handleSignup = (formData: any) => {
 
     toast.dismiss('signup-loading');
     toast.success(
-      `🎉 Account created successfully! Welcome to AgroChain, ${formData.name}!`, 
+      `🎉 Account created successfully! Welcome to KrishiSetu, ${formData.name}!`, 
       {
         duration: 5000,
         style: {
@@ -1871,7 +1871,7 @@ param(
     [switch]$Force
 )
 
-Write-Host "🔥 AgroChain Deployment Pipeline Started" -ForegroundColor Green
+Write-Host "🔥 KrishiSetu Deployment Pipeline Started" -ForegroundColor Green
 
 # 1. Environment Validation
 Write-Host "📋 Validating Environment..." -ForegroundColor Cyan
@@ -2001,7 +2001,7 @@ const config = {
   
   // Application settings
   app: {
-    name: "AgroChain",
+    name: "KrishiSetu",
     version: process.env.VITE_APP_VERSION || "1.0.0",
     environment: process.env.NODE_ENV || "development",
     debug: process.env.VITE_DEBUG === "true"
@@ -2091,7 +2091,7 @@ const registerCropOnBlockchain = async (crop: BlockchainCrop) => {
 **Toast Notifications:**
 - **Library**: Sonner (modern toast library)
 - **Loading State**: "Creating your account..." 
-- **Success Message**: "🎉 Account created successfully! Welcome to AgroChain, [Name]!"
+- **Success Message**: "🎉 Account created successfully! Welcome to KrishiSetu, [Name]!"
 - **Styling**: Green themed with custom CSS variables
 - **Duration**: 5 seconds for success messages
 
@@ -2110,7 +2110,7 @@ const handleSignup = (formData: any) => {
 
     // Success toast
     toast.success(
-      `🎉 Account created successfully! Welcome to AgroChain, ${formData.name}!`, 
+      `🎉 Account created successfully! Welcome to KrishiSetu, ${formData.name}!`, 
       {
         duration: 5000,
         style: {
@@ -2602,7 +2602,7 @@ const trackUserAction = (action: string, category: string, label?: string) => {
 
 ### Project Status: PRODUCTION READY ✅
 
-**AgroChain** is a **comprehensive, feature-complete agricultural supply chain management system** that successfully demonstrates modern full-stack development with blockchain integration.
+**KrishiSetu** is a **comprehensive, feature-complete agricultural supply chain management system** that successfully demonstrates modern full-stack development with blockchain integration.
 
 ### Key Strengths
 
@@ -2667,7 +2667,7 @@ const trackUserAction = (action: string, category: string, label?: string) => {
 
 ## 🏆 Conclusion
 
-**AgroChain represents a successful implementation of cutting-edge technology solving real-world agricultural challenges.** The system demonstrates:
+**KrishiSetu represents a successful implementation of cutting-edge technology solving real-world agricultural challenges.** The system demonstrates:
 
 - **Technical Mastery**: Full-stack development with modern technologies
 - **Business Value**: Solving transparency and trust issues in food supply chains
@@ -2679,4 +2679,4 @@ const trackUserAction = (action: string, category: string, label?: string) => {
 
 ---
 
-*This documentation represents a comprehensive analysis of the AgroChain project as of January 2024. The system is actively deployed and operational at https://sih-agro-chain.web.app*
+*This documentation represents a comprehensive analysis of the KrishiSetu project as of January 2024. The system is actively deployed and operational at https://sih-agro-chain.web.app*
